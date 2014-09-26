@@ -1,0 +1,97 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="LunchMoneyApp.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    shell:SystemTray.IsVisible="True">
+
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock x:Name="ApplicationTitle" Text="LunchMoney" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock x:Name="PageTitle" Text="Your cards" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+        </StackPanel>
+
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <!--
+            <TextBox 
+                Height="72" Width="437"
+                HorizontalAlignment="Left" VerticalAlignment="Top" 
+                Margin="12,30,0,0" 
+                Name="textBox1" 
+                Text=""  />
+            <Button 
+                Content="Add New Item" 
+                Height="72" Width="437"
+                HorizontalAlignment="Left" VerticalAlignment="Top" 
+                Margin="12,120,0,0" 
+                Name="button1" 
+                Click="button1_Click" />
+            -->
+            <ListBox Height="403" 
+                     HorizontalAlignment="Left" VerticalAlignment="Top"
+                     Margin="12,0,0,0"
+                     x:Name="LunchCardList"
+                     Width="437"  
+                     SelectionChanged="listBox1_SelectionChanged" 
+                     Loaded="Menu_Loaded"
+                     ItemsSource="{Binding}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Vertical"  VerticalAlignment="Center" >
+                                <TextBlock Text="{Binding Path=Code}" FontSize="25" />
+                                <TextBlock Text="{Binding Path=CardNumber}" FontSize="18" Width="119" />
+                            </StackPanel>
+                            <TextBlock Text="{Binding Path=Balance}" 
+                                       FontSize="36" 
+                                       HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                       Height="60" Width="254" />
+                            <StackPanel Orientation="Vertical"  VerticalAlignment="Center" >
+                                <TextBlock Text="{Binding Path=LastCheckd}" FontSize="18" Height="24" Width="67" />
+                                <TextBlock Text="ago" FontSize="18" Height="23" Width="69" />
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+        
+        <!--<Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0"></Grid>-->
+    </Grid>
+
+ 
+    <!--ApplicationBar-->
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
+            <shell:ApplicationBarIconButton 
+                IconUri="icons/appbar.add.rest.png" 
+                Text="Add"
+                Click="ApplicationBarIconButtonAdd_Click"
+                />
+            <shell:ApplicationBarIconButton 
+                IconUri="icons/appbar.refresh.rest.png"
+                Text="Update all" 
+                />
+            <!--Not needed - left for reference
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text="Add"/>
+                <shell:ApplicationBarMenuItem Text="Update all"/>
+            </shell:ApplicationBar.MenuItems>
+            -->
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
+
+</phone:PhoneApplicationPage>
