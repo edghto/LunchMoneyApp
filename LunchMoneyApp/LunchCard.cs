@@ -15,7 +15,7 @@ namespace LunchMoneyApp
     public class LunchCard : INotifyPropertyChanged
     {
 
-        private System.DateTime? lastDate = null;
+        private DateTime? lastDate = null;
 
         private int _code;
         public int Code
@@ -82,12 +82,14 @@ namespace LunchMoneyApp
                 this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-        
+
         public bool update()
         {
             lastDate = new DateTime(2014, 09, 25);
             DateTime current = DateTime.Now.Date;
-            string tmp = "";
+            String diff = null;
+            TimeDiff td = new TimeDiff(current, lastDate);
+
 
             if (lastDate == null)
             {
@@ -96,36 +98,56 @@ namespace LunchMoneyApp
                 return true;
             }
 
-            TimeSpan s = current.Subtract(lastDate ?? default(DateTime));
-            String unit = null;
-
-            if (s.Seconds != 0)
-            {
-                unit = "sec";
-                tmp = s.Seconds.ToString();
-            }
-            else if (s.Minutes != 0)
-            {
-                unit = "min";
-                tmp = s.Minutes.ToString();
-            }
-            else if (s.Hours != 0)
-            {
-                unit = "h";
-                tmp = s.Hours.ToString();
-            }
-            else if (s.Days != 0)
-            {
-                unit = s.Days == 1 ? "day" : "days";
-                tmp = s.Days.ToString();
-            }
-
-            if (unit != null)
-                LastCheckd = tmp + " " + unit;
+            diff = td.diff();
+            if(diff != null)
+                LastCheckd = diff;
 
             return true;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        class TimeDiff
+        {
+            private DateTime d1;
+            private DateTime d2;
+
+            public TimeDiff(DateTime d1, DateTime? d2)
+            {
+                this.d1 = d1;
+                this.d2 = d2 ?? d1; /* if second is null just use first one */
+            }
+
+            public string diff()
+            {
+                TimeSpan ts = d1.Subtract(d2);
+                string unit = null;
+                string tmp = "";
+
+                if (ts.Seconds != 0)
+                {
+                    unit = "sec";
+                    tmp = ts.Seconds.ToString();
+                }
+                else if (ts.Minutes != 0)
+                {
+                    unit = "min";
+                    tmp = ts.Minutes.ToString();
+                }
+                else if (ts.Hours != 0)
+                {
+                    unit = "h";
+                    tmp = ts.Hours.ToString();
+                }
+                else if (ts.Days != 0)
+                {
+                    unit = ts.Days == 1 ? "day" : "days";
+                    tmp = ts.Days.ToString();
+                }
+
+                return unit != null ? tmp + " " + unit: null;
+            }
+        }
+
     }
 }
