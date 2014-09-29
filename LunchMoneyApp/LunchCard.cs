@@ -9,6 +9,10 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.ComponentModel;
+using System.IO;
+using System.Text;
+using Newtonsoft.Json.Linq;
+using System.Windows.Threading;
 
 namespace LunchMoneyApp
 {
@@ -74,7 +78,6 @@ namespace LunchMoneyApp
             }
         }
 
-
         private void RaisePropertyChanged(string propertyName)
         {
             if (this.PropertyChanged != null)
@@ -83,24 +86,52 @@ namespace LunchMoneyApp
             }
         }
 
-        public bool update()
+        void processResponse(String response)
         {
-            lastDate = new DateTime(2014, 09, 25);
             DateTime current = DateTime.Now.Date;
-            String diff = null;
-            TimeDiff td = new TimeDiff(current, lastDate);
+            TimeDiff td = new TimeDiff();
+            string diff = null;
+            double balance = 0;
 
+            try
+            {
+                JObject jsonObject = JObject.Parse(response);
+                JObject balanceJsonObj = jsonObject.Value<JObject>("balance");
+                JObject cardJsonObj = balanceJsonObj.Value<JObject>(CardNumber + "");
+                balance = cardJsonObj.Value<double>("amount");
+            }
+            catch
+            {
+            }
 
             if (lastDate == null)
             {
                 lastDate = current;
-                LastCheckd = "0 sec";
-                return true;
+                diff = "0 sec";
+            }
+            else
+            {
+                diff = td.diff(current, lastDate??current);
             }
 
-            diff = td.diff();
-            if(diff != null)
-                LastCheckd = diff;
+            Deployment.Current.Dispatcher.BeginInvoke(() => { Balance = balance; LastCheckd = diff; });
+        }
+
+        public bool update()
+        {
+            HttpPOSTWorker httpPostWorker = new HttpPOSTWorker();
+            string postData = string.Format(
+                "action=mobileweb&code={0}&cardNumber={1}&lang=pl",
+                Code, CardNumber);
+            try
+            {
+                httpPostWorker.connect("http://www.edenred.pl/mobileapp/",
+                    Encoding.UTF8.GetBytes(postData), new ProcessHttpPostResponse(processResponse));
+            }
+            catch
+            {
+                return false;
+            }
 
             return true;
         }
@@ -109,21 +140,12 @@ namespace LunchMoneyApp
 
         class TimeDiff
         {
-            private DateTime d1;
-            private DateTime d2;
-
-            public TimeDiff(DateTime d1, DateTime? d2)
-            {
-                this.d1 = d1;
-                this.d2 = d2 ?? d1; /* if second is null just use first one */
-            }
-
-            public string diff()
+            public string diff(DateTime d1, DateTime d2)
             {
                 TimeSpan ts = d1.Subtract(d2);
                 string unit = null;
                 string tmp = "";
-
+                
                 if (ts.Seconds != 0)
                 {
                     unit = "sec";
