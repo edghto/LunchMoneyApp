@@ -9,7 +9,7 @@
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
-    SupportedOrientations="Portrait" Orientation="Portrait"
+    SupportedOrientations="PortraitOrLandscape" Orientation="Portrait"
     mc:Ignorable="d" d:DesignHeight="696" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True">
 
@@ -28,6 +28,9 @@
 
 
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <TextBlock 
+                Text="Last 4 digits from the front of the card" 
+                Margin="27,44,19,460" />
             <TextBox 
                 Height="72" Width="437"
                 HorizontalAlignment="Left" VerticalAlignment="Top" 
@@ -36,6 +39,9 @@
                 Text="" 
                 InputScope="Digits"
                 MaxLength="4"/>
+            <TextBlock 
+                Text="All 10 digits from the back of the card" 
+                Margin="27,144,19,358" />
             <TextBox 
                 Height="72" Width="437"
                 HorizontalAlignment="Left" VerticalAlignment="Top" 
@@ -51,7 +57,7 @@
                 Margin="12,265,0,0" 
                 Name="AddButton"
                 Click="ApplicationBarIconButtonAdd_Click"
-                /> 
+                />
         </Grid>
     </Grid>
  
