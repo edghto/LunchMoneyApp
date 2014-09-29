@@ -36,10 +36,14 @@ namespace LunchMoneyApp
             }
         }
 
-        public bool Add(LunchCard lunchCard)
+        public void Add(LunchCard card)
         {
-            LunchCards.Add(lunchCard);
-            return true;
+            LunchCards.Add(card);
+        }
+
+        public void Del(LunchCard card)
+        {
+            LunchCards.Remove(card);
         }
     }
 }
