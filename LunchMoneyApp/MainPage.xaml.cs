@@ -83,7 +83,13 @@ namespace LunchMoneyApp
 
         private void ApplicationBarIconButtonAdd_Click(object sender, EventArgs e)
         {
-            this.NavigationService.Navigate(new Uri("/AddView.xaml"));
+            App.vm = this.vm;
+            this.NavigationService.Navigate(new Uri("/AddPage.xaml", UriKind.Relative));
+        }
+
+        private void ApplicationBarIconButtonUpdate_Click(object sender, EventArgs e)
+        {
+            vm.UpdateAll();
         }
     }
 }

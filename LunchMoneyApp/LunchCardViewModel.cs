@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 namespace LunchMoneyApp
 {
@@ -24,6 +25,24 @@ namespace LunchMoneyApp
             l.Add(new LunchCard() { Code = 1234, CardNumber = 1234567890, Balance = 0, LastCheckd = "never" });
 
             LunchCards = l;
+        }
+
+        public void UpdateAll()
+        {
+            IEnumerator<LunchCard> iter = LunchCards.GetEnumerator();
+            while (iter.MoveNext())
+            {
+                (iter.Current as LunchCard).update();
+            }
+        }
+
+        internal bool Add(short code, int cardNumber)
+        {
+            LunchCard card = new LunchCard();
+            card.Code = code;
+            card.CardNumber = cardNumber;
+            LunchCards.Add(card);
+            return true;
         }
     }
 }

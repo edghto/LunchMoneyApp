@@ -20,7 +20,7 @@
         </Grid.RowDefinitions>
 
         <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock x:Name="ApplicationTitle" Text="LunchMoney" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock x:Name="ApplicationTitle" Text="Lunch Money" Style="{StaticResource PhoneTextNormalStyle}"/>
             <TextBlock x:Name="PageTitle" Text="Your cards" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
 
@@ -84,6 +84,7 @@
             <shell:ApplicationBarIconButton 
                 IconUri="icons/appbar.refresh.rest.png"
                 Text="Update all" 
+                Click="ApplicationBarIconButtonUpdate_Click"
                 />
             <!--Not needed - left for reference
             <shell:ApplicationBar.MenuItems>
