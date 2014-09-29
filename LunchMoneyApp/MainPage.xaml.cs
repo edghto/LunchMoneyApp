@@ -82,6 +82,20 @@ namespace LunchMoneyApp
             }
         }
 
+        private void ContextMenuButtonDelete_Click(object sender, EventArgs e)
+        {
+            MenuItem menuItem = (sender as MenuItem);
+            LunchCard card = ((VisualTreeHelper.GetParent(menuItem) as FrameworkElement).DataContext as LunchCard);
+            vm.Del(card);
+        }
+
+        private void ConextMenuButtonUpdate_Click(object sender, EventArgs e)
+        {
+            MenuItem menuItem = (sender as MenuItem);
+            LunchCard card = ((VisualTreeHelper.GetParent(menuItem) as FrameworkElement).DataContext as LunchCard);
+            card.update();
+        }
+
         private void Menu_Loaded(object sender, RoutedEventArgs e)
         {
             ListBox listBox = (sender as ListBox);
