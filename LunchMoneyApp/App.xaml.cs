@@ -23,7 +23,12 @@ namespace LunchMoneyApp
         /// <returns>The root frame of the Phone Application.</returns>
         public PhoneApplicationFrame RootFrame { get; private set; }
 
-        public static LunchCardViewModel vm { get; set; }
+        public static LunchCard lunchCard { get; set; }
+
+        static App()
+        {
+            lunchCard = null;
+        }
 
         /// <summary>
         /// Constructor for the Application object.

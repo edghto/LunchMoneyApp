@@ -15,41 +15,25 @@ namespace LunchMoneyApp
 {
     public partial class AddPage : PhoneApplicationPage
     {
-        private LunchCardViewModel vm;
-
         public AddPage()
         {
             InitializeComponent();
         }
 
-        protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e); 
-            if (App.vm != null)
-            {
-                vm = App.vm ?? new LunchCardViewModel();
-            }
-            else
-            {
-                MessageBox.Show("Unknown error!");
-                this.NavigationService.GoBack();
-            }
-        }
-
         private void ApplicationBarIconButtonAdd_Click(object sender, EventArgs e)
         {
-            if (codeTextBox.Text.ToString().Length == 4 &&
-                cardNumberTextBox.Text.ToString().Length == 10)
+            string codeStr = codeTextBox.Text.ToString();
+            string cardNumberStr = cardNumberTextBox.Text.ToString();
+            if (codeStr.Length == 4 &&
+                cardNumberStr.Length == 10)
             {
-                if (vm.Add(Int16.Parse(codeTextBox.Text.ToString()),
-                    Int32.Parse(cardNumberTextBox.Text.ToString())))
-                {
-                    this.NavigationService.GoBack();
-                }
-                else
-                {
-                    MessageBox.Show("Internal error!");
-                }
+                App.lunchCard = new LunchCard() 
+                { 
+                    Code = Int16.Parse(codeStr), 
+                    CardNumber =  Int64.Parse(cardNumberStr), 
+                    Balance = 0, LastCheckd = "never" 
+                };
+                this.NavigationService.GoBack();
             }
             else
             {

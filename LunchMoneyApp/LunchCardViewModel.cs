@@ -36,12 +36,9 @@ namespace LunchMoneyApp
             }
         }
 
-        internal bool Add(short code, int cardNumber)
+        public bool Add(LunchCard lunchCard)
         {
-            LunchCard card = new LunchCard();
-            card.Code = code;
-            card.CardNumber = cardNumber;
-            LunchCards.Add(card);
+            LunchCards.Add(lunchCard);
             return true;
         }
     }

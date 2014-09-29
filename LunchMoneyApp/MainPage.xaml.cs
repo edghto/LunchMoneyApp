@@ -45,6 +45,13 @@ namespace LunchMoneyApp
             {
                 vm.LoadLunchCards();
             }
+
+            if (App.lunchCard != null)
+            {
+                vm.Add(App.lunchCard);
+                App.lunchCard = null;
+            }
+
             LunchCardList.DataContext = vm.LunchCards;
         }
 
@@ -83,7 +90,6 @@ namespace LunchMoneyApp
 
         private void ApplicationBarIconButtonAdd_Click(object sender, EventArgs e)
         {
-            App.vm = this.vm;
             this.NavigationService.Navigate(new Uri("/AddPage.xaml", UriKind.Relative));
         }
 
