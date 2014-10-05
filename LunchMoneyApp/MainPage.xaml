@@ -68,7 +68,7 @@
                                        Height="60" Width="254" />
                             <StackPanel Orientation="Vertical"  VerticalAlignment="Center" >
                                 <TextBlock Text="{Binding Path=LastCheckd}" FontSize="18" Height="24" Width="67" />
-                                <TextBlock Text="ago" FontSize="18" Height="23" Width="69" />
+                                <!--<TextBlock Text="ago" FontSize="18" Height="23" Width="69" />-->
                             </StackPanel>
                         </StackPanel>
                     </DataTemplate>
