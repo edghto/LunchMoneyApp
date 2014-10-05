@@ -14,10 +14,10 @@
     shell:SystemTray.IsVisible="True">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
+    <ScrollViewer>
+        <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <!--TitlePanel contains the name of the application and page title-->
@@ -26,41 +26,16 @@
             <TextBlock x:Name="PageTitle" Text="Add new card" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
 
-
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <TextBlock 
-                Text="Last 4 digits from the front of the card" 
-                Margin="27,44,0,0" />
-            <TextBox 
-                Height="72" Width="437"
-                HorizontalAlignment="Left" VerticalAlignment="Top" 
-                Margin="12,65,0,0" 
-                Name="codeTextBox" 
-                Text="" 
-                InputScope="Digits"
-                MaxLength="4"/>
-            <TextBlock 
-                Text="All 10 digits from the back of the card" 
-                Margin="27,144,0,0" />
-            <TextBox 
-                Height="72" Width="437"
-                HorizontalAlignment="Left" VerticalAlignment="Top" 
-                Margin="12,165,0,0" 
-                Name="cardNumberTextBox" 
-                Text="" 
-                InputScope="Digits"
-                MaxLength="10"/>
-            <Button 
-                Content="Add Card" 
-                Height="72" Width="437"
-                HorizontalAlignment="Left" VerticalAlignment="Top" 
-                Margin="12,265,0,0" 
-                Name="AddButton"
-                Click="ApplicationBarIconButtonAdd_Click"
-                />
+        <StackPanel x:Name="InputStack" Margin="12,135,0,0">
+            <TextBlock Text="Last 4 digits from the front of the card" Margin="27,12,0,0" />
+            <TextBox Height="72" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="12,0,12,0" Name="codeTextBox" Text="" InputScope="Digits" MaxLength="4" />
+            <TextBlock Text="All 10 digits from the back of the card" Margin="27,0,0,0" />
+            <TextBox Height="72" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="12,0,12,0" Name="cardNumberTextBox" Text="" InputScope="Digits" MaxLength="10" />
+            <Button Content="Add Card" Height="72" Width="437" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="12,0,0,0" Name="AddButton" Click="ApplicationBarIconButtonAdd_Click" />
+        </StackPanel>
         </Grid>
-    </Grid>
- 
+    </ScrollViewer>
+
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
             <shell:ApplicationBarIconButton IconUri="icons/appbar.check.rest.png" Text="OK" 
