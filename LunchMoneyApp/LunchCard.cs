@@ -99,22 +99,25 @@ namespace LunchMoneyApp
                 JObject balanceJsonObj = jsonObject.Value<JObject>("balance");
                 JObject cardJsonObj = balanceJsonObj.Value<JObject>(CardNumber + "");
                 balance = cardJsonObj.Value<double>("amount");
+
+                if (lastDate == null)
+                {
+                    lastDate = current;
+                    diff = "0 sec";
+                }
+                else
+                {
+                    diff = td.diff(current, lastDate ?? current);
+                }
+
+                Deployment.Current.Dispatcher.BeginInvoke(() => { Balance = balance; LastCheckd = diff; });
             }
             catch
             {
+                diff = "Error";
+                Deployment.Current.Dispatcher.BeginInvoke(() => { LastCheckd = diff; });
             }
 
-            if (lastDate == null)
-            {
-                lastDate = current;
-                diff = "0 sec";
-            }
-            else
-            {
-                diff = td.diff(current, lastDate??current);
-            }
-
-            Deployment.Current.Dispatcher.BeginInvoke(() => { Balance = balance; LastCheckd = diff; });
         }
 
         public bool update()
@@ -134,6 +137,12 @@ namespace LunchMoneyApp
             }
 
             return true;
+        }
+
+        public object getCopy()
+        {
+            LunchCard copy = (LunchCard)this.MemberwiseClone();
+            return copy;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -170,6 +179,5 @@ namespace LunchMoneyApp
                 return unit != null ? tmp + " " + unit: null;
             }
         }
-
     }
 }
