@@ -30,7 +30,7 @@
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <TextBlock 
                 Text="Last 4 digits from the front of the card" 
-                Margin="27,44,19,460" />
+                Margin="27,44,0,0" />
             <TextBox 
                 Height="72" Width="437"
                 HorizontalAlignment="Left" VerticalAlignment="Top" 
@@ -41,7 +41,7 @@
                 MaxLength="4"/>
             <TextBlock 
                 Text="All 10 digits from the back of the card" 
-                Margin="27,144,19,358" />
+                Margin="27,144,0,0" />
             <TextBox 
                 Height="72" Width="437"
                 HorizontalAlignment="Left" VerticalAlignment="Top" 
