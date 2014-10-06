@@ -58,5 +58,13 @@ namespace LunchMoneyApp
         {
             return card.Code + " " + card.CardNumber; ;
         }
+
+        internal void RefreshLastChecked()
+        {
+            foreach (LunchCard card in LunchCards)
+            {
+                card.refreshLastCheckedProperty();
+            }
+        }
     }
 }

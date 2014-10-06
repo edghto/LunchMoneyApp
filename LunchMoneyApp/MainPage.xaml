@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:local="clr-namespace:LunchMoneyApp"
     mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -26,21 +27,6 @@
         </StackPanel>
 
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <!--
-            <TextBox 
-                Height="72" Width="437"
-                HorizontalAlignment="Left" VerticalAlignment="Top" 
-                Margin="12,30,0,0" 
-                Name="textBox1" 
-                Text=""  />
-            <Button 
-                Content="Add New Item" 
-                Height="72" Width="437"
-                HorizontalAlignment="Left" VerticalAlignment="Top" 
-                Margin="12,120,0,0" 
-                Name="button1" 
-                Click="button1_Click" />
-            -->
             <ListBox Height="403" 
                      HorizontalAlignment="Stretch" VerticalAlignment="Top"
                      Margin="12,0,0,0"
@@ -66,10 +52,10 @@
                                        FontSize="36" 
                                        HorizontalAlignment="Center" VerticalAlignment="Center" 
                                        Height="60" Width="254" />
-                            <StackPanel Orientation="Vertical"  VerticalAlignment="Center" >
-                                <TextBlock Text="{Binding Path=LastCheckd}" FontSize="18" Height="24" Width="67" />
-                                <!--<TextBlock Text="ago" FontSize="18" Height="23" Width="69" />-->
-                            </StackPanel>
+                            <local:LastCheckedStackPanel Orientation="Vertical"  VerticalAlignment="Center" >
+                                <TextBlock Text="never" local:LastCheckedStackPanel.LastChecked="{Binding Path=LastChecked}"  FontSize="18" Height="24" Width="67" />
+                                <TextBlock Name ="HelperStatus" Text="" FontSize="18" Height="23" Width="69" />
+                            </local:LastCheckedStackPanel>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

@@ -18,8 +18,19 @@ namespace LunchMoneyApp
 {
     public class LunchCard : INotifyPropertyChanged
     {
-
-        private DateTime? lastDate = null;
+        private DateTime? _lastDate;
+        private DateTime? LastDate
+        {
+            get
+            {
+                return _lastDate;
+            }
+            set
+            {
+                _lastDate = value;
+                RaisePropertyChanged("LastDate");
+            }
+        }
 
         private int _code;
         public int Code
@@ -65,7 +76,7 @@ namespace LunchMoneyApp
         }
 
         private string _lastCheckd;
-        public string LastCheckd
+        public string LastChecked
         {
             get
             {
@@ -74,7 +85,7 @@ namespace LunchMoneyApp
             set
             {
                 _lastCheckd = value;
-                RaisePropertyChanged("LastCheckd");
+                RaisePropertyChanged("LastChecked");
             }
         }
 
@@ -100,24 +111,41 @@ namespace LunchMoneyApp
                 JObject cardJsonObj = balanceJsonObj.Value<JObject>(CardNumber + "");
                 balance = cardJsonObj.Value<double>("amount");
 
-                if (lastDate == null)
+                if (LastDate == null)
                 {
-                    lastDate = current;
                     diff = "0 sec";
                 }
                 else
                 {
-                    diff = td.diff(current, lastDate ?? current);
+                    diff = td.diff(current, _lastDate ?? current);
                 }
+                LastDate = current;
 
-                Deployment.Current.Dispatcher.BeginInvoke(() => { Balance = balance; LastCheckd = diff; });
+                Deployment.Current.Dispatcher.BeginInvoke(() => { Balance = balance; LastChecked = diff; });
             }
             catch
             {
                 diff = "Error";
-                Deployment.Current.Dispatcher.BeginInvoke(() => { LastCheckd = diff; });
+                Deployment.Current.Dispatcher.BeginInvoke(() => { LastChecked = diff; });
+            }
+        }
+
+        public void refreshLastCheckedProperty()
+        {
+            DateTime current = DateTime.Now.Date;
+            TimeDiff td = new TimeDiff();
+            string diff;
+
+            if (LastDate == null)
+            {
+                diff = "Never";
+            }
+            else
+            {
+                diff = td.diff(current, _lastDate ?? current);
             }
 
+            LastChecked = diff;
         }
 
         public bool update()

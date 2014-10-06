@@ -14,6 +14,40 @@ using Microsoft.Phone.Shell;
 
 namespace LunchMoneyApp
 {
+
+    public class LastCheckedStackPanel : StackPanel
+    {
+        public static readonly DependencyProperty LastCheckedProperty =
+            DependencyProperty.RegisterAttached("LastChecked",
+             typeof(string),
+             typeof(LastCheckedStackPanel),
+             new PropertyMetadata("never", OnFooChanged));
+
+
+        public static void SetLastChecked(DependencyObject obj, string value)
+        {
+            obj.SetValue(LastCheckedProperty, value);
+        }
+
+        public static string GetLastChecked(DependencyObject obj)
+        {
+            return (string)obj.GetValue(LastCheckedProperty);
+        } 
+
+        static void OnFooChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args) 
+        {
+            TextBlock lastCheckedTextBlock = obj as TextBlock;
+            TextBlock helperStatusTextBlock = (TextBlock)
+                ((VisualTreeHelper.GetParent(lastCheckedTextBlock) as LastCheckedStackPanel).FindName("HelperStatus"));
+            lastCheckedTextBlock.Text = (string) args.NewValue;
+            if (lastCheckedTextBlock.Text == "Error" ||
+                lastCheckedTextBlock.Text == "Never")
+                helperStatusTextBlock.Text = "";
+            else
+                helperStatusTextBlock.Text = "ago";
+         } 
+    }
+
     public partial class MainPage : PhoneApplicationPage
     {
         private LunchCardViewModel vm;
@@ -53,6 +87,7 @@ namespace LunchMoneyApp
             }
 
             LunchCardList.DataContext = vm.LunchCards;
+            vm.RefreshLastChecked();
         }
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
