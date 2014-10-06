@@ -41,13 +41,20 @@ namespace LunchMoneyApp
                         getResponseAsyncResult =>
                         {
                             HttpWebRequest req = (HttpWebRequest)getResponseAsyncResult.AsyncState;
-                            HttpWebResponse res = (HttpWebResponse)request.EndGetResponse(getResponseAsyncResult);
-                            Stream streamResponse = res.GetResponseStream();
-                            StreamReader streamReader = new StreamReader(streamResponse);
-                            string responseStr = streamReader.ReadToEnd();
-                            streamResponse.Close();
-                            streamReader.Close();
-                            res.Close();
+                            string responseStr = null;
+                            try
+                            {
+                                HttpWebResponse res = (HttpWebResponse)request.EndGetResponse(getResponseAsyncResult);
+                                Stream streamResponse = res.GetResponseStream();
+                                StreamReader streamReader = new StreamReader(streamResponse);
+                                responseStr = streamReader.ReadToEnd();
+                                streamResponse.Close();
+                                streamReader.Close();
+                                res.Close();
+                            }
+                            catch
+                            {
+                            }
                             callback(responseStr);
                         }, 
                         request);
