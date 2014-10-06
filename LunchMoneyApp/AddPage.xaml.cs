@@ -31,7 +31,7 @@ namespace LunchMoneyApp
                 { 
                     Code = Int16.Parse(codeStr), 
                     CardNumber =  Int64.Parse(cardNumberStr), 
-                    Balance = 0, LastChecked = "Never" 
+                    Balance = 0, LastChecked = "Never", isNew = true 
                 };
                 this.NavigationService.GoBack();
             }

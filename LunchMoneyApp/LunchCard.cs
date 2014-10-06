@@ -18,8 +18,9 @@ namespace LunchMoneyApp
 {
     public class LunchCard : INotifyPropertyChanged
     {
-        private DateTime? _lastDate;
-        private DateTime? LastDate
+        public bool isNew { get; set; } //This shouldn't be public
+        private DateTime _lastDate;
+        public DateTime LastDate
         {
             get
             {
@@ -111,14 +112,16 @@ namespace LunchMoneyApp
                 JObject cardJsonObj = balanceJsonObj.Value<JObject>(CardNumber + "");
                 balance = cardJsonObj.Value<double>("amount");
 
-                if (LastDate == null)
+                if (isNew)
                 {
                     diff = "0 sec";
                 }
                 else
                 {
-                    diff = td.diff(current, _lastDate ?? current);
+                    diff = td.diff(current, LastDate);
                 }
+                
+                isNew = false;
                 LastDate = current;
 
                 Deployment.Current.Dispatcher.BeginInvoke(() => { Balance = balance; LastChecked = diff; });
@@ -136,13 +139,20 @@ namespace LunchMoneyApp
             TimeDiff td = new TimeDiff();
             string diff;
 
-            if (LastDate == null)
+            if (isNew)
             {
                 diff = "Never";
             }
             else
             {
-                diff = td.diff(current, _lastDate ?? current);
+                try
+                {
+                    diff = td.diff(current, LastDate);
+                }
+                catch
+                {
+                    diff = "Error";
+                }
             }
 
             LastChecked = diff;
@@ -177,6 +187,8 @@ namespace LunchMoneyApp
 
         class TimeDiff
         {
+            public class DiffException : SystemException {}
+
             public string diff(DateTime d1, DateTime d2)
             {
                 TimeSpan ts = d1.Subtract(d2);
@@ -204,7 +216,10 @@ namespace LunchMoneyApp
                     tmp = ts.Days.ToString();
                 }
 
-                return unit != null ? tmp + " " + unit: null;
+                if (unit == null)
+                    throw new DiffException();
+
+                return tmp + " " + unit;
             }
         }
     }
