@@ -200,17 +200,17 @@ namespace LunchMoneyApp
                     unit = "sec";
                     tmp = ts.Seconds.ToString();
                 }
-                else if (ts.Minutes != 0)
+                if (ts.Minutes != 0)
                 {
                     unit = "min";
                     tmp = ts.Minutes.ToString();
                 }
-                else if (ts.Hours != 0)
+                if (ts.Hours != 0)
                 {
                     unit = "h";
                     tmp = ts.Hours.ToString();
                 }
-                else if (ts.Days != 0)
+                if (ts.Days != 0)
                 {
                     unit = ts.Days == 1 ? "day" : "days";
                     tmp = ts.Days.ToString();
