@@ -23,7 +23,6 @@ namespace LunchMoneyApp
              typeof(LastCheckedStackPanel),
              new PropertyMetadata("never", OnFooChanged));
 
-
         public static void SetLastChecked(DependencyObject obj, string value)
         {
             obj.SetValue(LastCheckedProperty, value);
@@ -45,6 +44,8 @@ namespace LunchMoneyApp
                 helperStatusTextBlock.Text = "";
             else
                 helperStatusTextBlock.Text = "ago";
+
+            ProgressIndicatorController.Off();
          } 
     }
 
@@ -70,7 +71,7 @@ namespace LunchMoneyApp
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
         {
-            base.OnNavigatedTo(e); 
+            base.OnNavigatedTo(e);
             if (!StateUtility.IsLaunching && this.State.ContainsKey("LunchCards"))
             {
                 vm = (LunchCardViewModel)this.State["LunchCards"];
@@ -110,10 +111,10 @@ namespace LunchMoneyApp
         {
             if (e.AddedItems.Count > 0)
             {
+                ProgressIndicatorController.On(this);
                 LunchCard card = (LunchCardList.SelectedItem as LunchCard);
                 card.update();
                 (sender as ListBox).SelectedIndex = -1;
-
             }
         }
 
@@ -126,6 +127,7 @@ namespace LunchMoneyApp
 
         private void ConextMenuButtonUpdate_Click(object sender, EventArgs e)
         {
+            ProgressIndicatorController.On(this);
             MenuItem menuItem = (sender as MenuItem);
             LunchCard card = ((VisualTreeHelper.GetParent(menuItem) as FrameworkElement).DataContext as LunchCard);
             card.update();
@@ -144,6 +146,7 @@ namespace LunchMoneyApp
 
         private void ApplicationBarIconButtonUpdate_Click(object sender, EventArgs e)
         {
+            ProgressIndicatorController.On(this);
             vm.UpdateAll();
         }
     }
