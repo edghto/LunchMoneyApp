@@ -52,8 +52,8 @@
                                        FontSize="36" 
                                        HorizontalAlignment="Center" VerticalAlignment="Center" 
                                        Height="60" Width="254" />
-                            <local:LastCheckedStackPanel Orientation="Vertical"  VerticalAlignment="Center" >
-                                <TextBlock Text="never" local:LastCheckedStackPanel.LastChecked="{Binding Path=LastChecked}"  FontSize="18" Height="24" Width="67" />
+                            <local:LastCheckedStackPanel Name="StatusStackPanel" Orientation="Vertical"  VerticalAlignment="Center" >
+                                <TextBlock Text="Never" local:LastCheckedStackPanel.LastChecked="{Binding Path=LastChecked}"  FontSize="18" Height="24" Width="67" />
                                 <TextBlock Name ="HelperStatus" Text="" FontSize="18" Height="23" Width="69" />
                             </local:LastCheckedStackPanel>
                         </StackPanel>
