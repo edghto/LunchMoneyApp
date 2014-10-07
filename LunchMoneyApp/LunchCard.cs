@@ -100,7 +100,7 @@ namespace LunchMoneyApp
 
         void processResponse(String response)
         {
-            DateTime current = DateTime.Now.Date;
+            DateTime current = DateTime.Now;
             TimeDiff td = new TimeDiff();
             string diff = null;
             double balance = 0;
@@ -135,7 +135,7 @@ namespace LunchMoneyApp
 
         public void refreshLastCheckedProperty()
         {
-            DateTime current = DateTime.Now.Date;
+            DateTime current = DateTime.Now;
             TimeDiff td = new TimeDiff();
             string diff;
 
