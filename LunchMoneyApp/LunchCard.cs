@@ -100,13 +100,10 @@ namespace LunchMoneyApp
 
         void processResponse(String response)
         {
-            DateTime current = DateTime.Now;
-            TimeDiff td = new TimeDiff();
             CheckStatus checkStatus = new CheckStatus();
             double balance = 0;
 
             checkStatus.isNew = false;
-            checkStatus.status = true;
             try
             {
                 JObject jsonObject = JObject.Parse(response);
@@ -114,19 +111,12 @@ namespace LunchMoneyApp
                 JObject cardJsonObj = balanceJsonObj.Value<JObject>(CardNumber + "");
                 balance = cardJsonObj.Value<double>("amount");
 
-                if (isNew)
-                {
-                    checkStatus.isNew = true;
-                    checkStatus.time = 0;
-                    checkStatus.timeUnit = CheckStatus.TimeUnit.SECONDS;
-                }
-                else
-                {
-                    td.diff(current, LastDate, checkStatus);
-                }
+                checkStatus.status = true;
+                checkStatus.time = 0;
+                checkStatus.timeUnit = CheckStatus.TimeUnit.SECONDS;
                 
                 isNew = false;
-                LastDate = current;
+                LastDate = DateTime.Now;
 
                 Deployment.Current.Dispatcher.BeginInvoke(() => { Balance = balance; LastChecked = checkStatus; });
             }
