@@ -14,23 +14,22 @@ using Microsoft.Phone.Shell;
 
 namespace LunchMoneyApp
 {
-
     public class LastCheckedStackPanel : StackPanel
     {
         public static readonly DependencyProperty LastCheckedProperty =
             DependencyProperty.RegisterAttached("LastChecked",
-             typeof(string),
+             typeof(CheckStatus),
              typeof(LastCheckedStackPanel),
-             new PropertyMetadata("never", OnFooChanged));
+             new PropertyMetadata(new CheckStatus(), OnFooChanged));
 
-        public static void SetLastChecked(DependencyObject obj, string value)
+        public static void SetLastChecked(DependencyObject obj, CheckStatus value)
         {
             obj.SetValue(LastCheckedProperty, value);
         }
 
-        public static string GetLastChecked(DependencyObject obj)
+        public static CheckStatus GetLastChecked(DependencyObject obj)
         {
-            return (string)obj.GetValue(LastCheckedProperty);
+            return (CheckStatus)obj.GetValue(LastCheckedProperty);
         } 
 
         static void OnFooChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args) 
@@ -38,12 +37,33 @@ namespace LunchMoneyApp
             TextBlock lastCheckedTextBlock = obj as TextBlock;
             TextBlock helperStatusTextBlock = (TextBlock)
                 ((VisualTreeHelper.GetParent(lastCheckedTextBlock) as LastCheckedStackPanel).FindName("HelperStatus"));
-            lastCheckedTextBlock.Text = (string) args.NewValue;
-            if (lastCheckedTextBlock.Text == "Error" ||
-                lastCheckedTextBlock.Text == "Never")
+            CheckStatus checkStatus = (CheckStatus)args.NewValue;
+
+            if (checkStatus.status)
+            {
+                lastCheckedTextBlock.Text = checkStatus.time + " ";
+                switch (checkStatus.timeUnit)
+                {
+                case CheckStatus.TimeUnit.DAYS:
+                    lastCheckedTextBlock.Text += checkStatus.time > 0 ? "days" : "day"; break;
+                case CheckStatus.TimeUnit.HOURS:
+                    lastCheckedTextBlock.Text += "h"; break;
+                case CheckStatus.TimeUnit.MINUTES:
+                    lastCheckedTextBlock.Text += "min"; break;
+                case CheckStatus.TimeUnit.SECONDS:
+                    lastCheckedTextBlock.Text += "sec"; break;
+                }
+            }
+            else if (checkStatus.isNew)
+            {
+                lastCheckedTextBlock.Text = "Never";
                 helperStatusTextBlock.Text = "";
+            }
             else
-                helperStatusTextBlock.Text = "ago";
+            {
+                lastCheckedTextBlock.Text = "Error";
+                helperStatusTextBlock.Text = "";
+            }
 
             ProgressIndicatorController.Off();
          } 

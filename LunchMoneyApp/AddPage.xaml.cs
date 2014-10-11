@@ -27,11 +27,13 @@ namespace LunchMoneyApp
             if (codeStr.Length == 4 &&
                 cardNumberStr.Length == 10)
             {
-                App.lunchCard = new LunchCard() 
-                { 
-                    Code = Int16.Parse(codeStr), 
-                    CardNumber =  Int64.Parse(cardNumberStr), 
-                    Balance = 0, LastChecked = "Never", isNew = true 
+                App.lunchCard = new LunchCard()
+                {
+                    Code = Int16.Parse(codeStr),
+                    CardNumber = Int64.Parse(cardNumberStr),
+                    Balance = 0,
+                    LastChecked = new CheckStatus(),
+                    isNew = true
                 };
                 this.NavigationService.GoBack();
             }

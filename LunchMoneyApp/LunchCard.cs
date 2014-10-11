@@ -76,8 +76,8 @@ namespace LunchMoneyApp
             }
         }
 
-        private string _lastCheckd;
-        public string LastChecked
+        private CheckStatus _lastCheckd;
+        public CheckStatus LastChecked
         {
             get
             {
@@ -102,9 +102,11 @@ namespace LunchMoneyApp
         {
             DateTime current = DateTime.Now;
             TimeDiff td = new TimeDiff();
-            string diff = null;
+            CheckStatus checkStatus = new CheckStatus();
             double balance = 0;
 
+            checkStatus.isNew = false;
+            checkStatus.status = true;
             try
             {
                 JObject jsonObject = JObject.Parse(response);
@@ -114,22 +116,24 @@ namespace LunchMoneyApp
 
                 if (isNew)
                 {
-                    diff = "0 sec";
+                    checkStatus.isNew = true;
+                    checkStatus.time = 0;
+                    checkStatus.timeUnit = CheckStatus.TimeUnit.SECONDS;
                 }
                 else
                 {
-                    diff = td.diff(current, LastDate);
+                    td.diff(current, LastDate, checkStatus);
                 }
                 
                 isNew = false;
                 LastDate = current;
 
-                Deployment.Current.Dispatcher.BeginInvoke(() => { Balance = balance; LastChecked = diff; });
+                Deployment.Current.Dispatcher.BeginInvoke(() => { Balance = balance; LastChecked = checkStatus; });
             }
             catch
             {
-                diff = "Error";
-                Deployment.Current.Dispatcher.BeginInvoke(() => { LastChecked = diff; });
+                checkStatus.status = false;
+                Deployment.Current.Dispatcher.BeginInvoke(() => { LastChecked = checkStatus; });
             }
         }
 
@@ -137,25 +141,27 @@ namespace LunchMoneyApp
         {
             DateTime current = DateTime.Now;
             TimeDiff td = new TimeDiff();
-            string diff;
+            CheckStatus checkStatus = new CheckStatus();
 
             if (isNew)
             {
-                diff = "Never";
+                checkStatus.isNew = true;
             }
             else
             {
+                checkStatus.isNew = false;
                 try
                 {
-                    diff = td.diff(current, LastDate);
+                    td.diff(current, LastDate, checkStatus);
+                    checkStatus.status = true;
                 }
                 catch
                 {
-                    diff = "Error";
+                    checkStatus.status = false;
                 }
             }
 
-            LastChecked = diff;
+            LastChecked = checkStatus;
         }
 
         public bool update()
@@ -189,38 +195,52 @@ namespace LunchMoneyApp
         {
             public class DiffException : SystemException {}
 
-            public string diff(DateTime d1, DateTime d2)
+            public void diff(DateTime d1, DateTime d2, CheckStatus checkStatus)
             {
                 TimeSpan ts = d1.Subtract(d2);
-                string unit = null;
-                string tmp = "";
                 
                 if (ts.Seconds != 0)
                 {
-                    unit = "sec";
-                    tmp = ts.Seconds.ToString();
+                    checkStatus.timeUnit = CheckStatus.TimeUnit.SECONDS;
+                    checkStatus.time = ts.Seconds;
                 }
                 if (ts.Minutes != 0)
                 {
-                    unit = "min";
-                    tmp = ts.Minutes.ToString();
+                    checkStatus.timeUnit = CheckStatus.TimeUnit.MINUTES;
+                    checkStatus.time = ts.Minutes;
                 }
                 if (ts.Hours != 0)
                 {
-                    unit = "h";
-                    tmp = ts.Hours.ToString();
+                    checkStatus.timeUnit = CheckStatus.TimeUnit.HOURS;
+                    checkStatus.time = ts.Hours;
                 }
                 if (ts.Days != 0)
                 {
-                    unit = ts.Days == 1 ? "day" : "days";
-                    tmp = ts.Days.ToString();
+                    checkStatus.timeUnit = CheckStatus.TimeUnit.DAYS;
+                    checkStatus.time = ts.Days;
                 }
 
-                if (unit == null)
+                if (checkStatus.timeUnit == CheckStatus.TimeUnit.NONE)
                     throw new DiffException();
-
-                return tmp + " " + unit;
             }
+        }        
+    }
+
+    public class CheckStatus
+    {
+        public enum TimeUnit { DAYS, HOURS, MINUTES, SECONDS, NONE };
+
+        public int time { get; set; }
+        public TimeUnit timeUnit { get; set; }
+        public bool status { get; set; }
+        public bool isNew { get; set; }
+
+        public CheckStatus()
+        {
+            time = -1;
+            timeUnit = CheckStatus.TimeUnit.NONE;
+            status = false;
+            isNew = true;
         }
     }
 }
