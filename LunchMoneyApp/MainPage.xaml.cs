@@ -169,5 +169,15 @@ namespace LunchMoneyApp
             ProgressIndicatorController.On(this);
             vm.UpdateAll();
         }
+
+        private void ApplicationBarItemLicense_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(
+                "Provided under MIT license\n" +
+                "github.com/edghto/LunchMoneyApp\n\n" +
+                "Powered by Json.NET under MIT License\n" +
+                "json.codeplex.com"
+            );
+        }
     }
 }

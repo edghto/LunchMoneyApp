@@ -79,12 +79,9 @@
                 Text="Update all" 
                 Click="ApplicationBarIconButtonUpdate_Click"
                 />
-            <!--Not needed - left for reference
             <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem Text="Add"/>
-                <shell:ApplicationBarMenuItem Text="Update all"/>
+                <shell:ApplicationBarMenuItem Text="License" Click="ApplicationBarItemLicense_Click" />
             </shell:ApplicationBar.MenuItems>
-            -->
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
 
