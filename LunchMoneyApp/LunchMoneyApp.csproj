@@ -68,7 +68,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="HttpPOSTWorker .cs" />
+    <Compile Include="HttpPOSTWorker.cs" />
     <Compile Include="LunchCard.cs" />
     <Compile Include="LunchCardViewModel.cs" />
     <Compile Include="MainPage.xaml.cs">
