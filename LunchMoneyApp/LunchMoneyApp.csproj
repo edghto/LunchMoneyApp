@@ -69,6 +69,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="HttpPOSTWorker.cs" />
+    <Compile Include="LiveTileViewModel.cs" />
     <Compile Include="LunchCard.cs" />
     <Compile Include="LunchCardViewModel.cs" />
     <Compile Include="MainPage.xaml.cs">
@@ -115,6 +116,7 @@
     <Content Include="Background.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="icons\tile.png" />
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />

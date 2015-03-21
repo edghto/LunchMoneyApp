@@ -32,6 +32,7 @@ namespace LunchMoneyApp
             return (CheckStatus)obj.GetValue(LastCheckedProperty);
         } 
 
+        //TODO rename this handler foo seems to be inappropriate 
         static void OnFooChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args) 
         {
             TextBlock lastCheckedTextBlock = obj as TextBlock;
@@ -72,14 +73,17 @@ namespace LunchMoneyApp
     public partial class MainPage : PhoneApplicationPage
     {
         private LunchCardViewModel vm;
+        private LiveTileViewModel liveTileVm;
 
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            /* first launch of app */
             StateUtility.IsLaunching = true;
         }
 
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
+            /* we have hust get back to running app */
             StateUtility.IsLaunching = false;
         }
 
@@ -87,6 +91,7 @@ namespace LunchMoneyApp
         {
             InitializeComponent();
             vm = new LunchCardViewModel();
+            liveTileVm = new LiveTileViewModel();
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -101,6 +106,11 @@ namespace LunchMoneyApp
                 vm.LoadLunchCards();
             }
 
+            /*
+             * The hacky way to pass data between AddPage and Main Page.
+             * Probably it would be better to pass it as url params.
+             * TODO fix it!
+             */
             if (App.lunchCard != null)
             {
                 vm.Add(App.lunchCard);
@@ -135,6 +145,25 @@ namespace LunchMoneyApp
                 LunchCard card = (LunchCardList.SelectedItem as LunchCard);
                 card.update();
                 (sender as ListBox).SelectedIndex = -1;
+            }
+        }
+
+        private void ContextMenuButtonPinToStart_Click(object sender, EventArgs e)
+        {
+            MenuItem menuItem = (sender as MenuItem);
+            LunchCard card = ((VisualTreeHelper.GetParent(menuItem) as FrameworkElement).DataContext as LunchCard);
+
+            try
+            {
+                liveTileVm.create(card);
+            }
+            catch (LiveTileExists)
+            {
+                MessageBox.Show("Tile already exists!"); //TODO probably not needed
+            }
+            catch
+            {
+                MessageBox.Show("Creating live tile failed!");
             }
         }
 
