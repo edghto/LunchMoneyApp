@@ -40,7 +40,7 @@
                             <!-- Conext menu -->
                             <toolkit:ContextMenuService.ContextMenu>
                                 <toolkit:ContextMenu>
-                                    <toolkit:MenuItem Header="Pin to start" Click="ContextMenuButtonPinToStart_Click"/>
+                                    <!--toolkit:MenuItem Header="Pin to start" Click="ContextMenuButtonPinToStart_Click"/-->
                                     <toolkit:MenuItem Header="Delete" Click="ContextMenuButtonDelete_Click"/>
                                     <toolkit:MenuItem Header="Update" Click="ConextMenuButtonUpdate_Click"/>
                                 </toolkit:ContextMenu>
@@ -81,7 +81,7 @@
                 Click="ApplicationBarIconButtonUpdate_Click"
                 />
             <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem Text="License" Click="ApplicationBarItemLicense_Click" />
+                <shell:ApplicationBarMenuItem Text="About" Click="ApplicationBarItemLicense_Click" />
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>

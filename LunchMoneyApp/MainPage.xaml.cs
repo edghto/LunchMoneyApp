@@ -73,7 +73,7 @@ namespace LunchMoneyApp
     public partial class MainPage : PhoneApplicationPage
     {
         private LunchCardViewModel vm;
-        private LiveTileViewModel liveTileVm;
+        //private LiveTileViewModel liveTileVm;
 
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
@@ -91,7 +91,7 @@ namespace LunchMoneyApp
         {
             InitializeComponent();
             vm = new LunchCardViewModel();
-            liveTileVm = new LiveTileViewModel();
+            //liveTileVm = new LiveTileViewModel();
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -148,24 +148,24 @@ namespace LunchMoneyApp
             }
         }
 
-        private void ContextMenuButtonPinToStart_Click(object sender, EventArgs e)
-        {
-            MenuItem menuItem = (sender as MenuItem);
-            LunchCard card = ((VisualTreeHelper.GetParent(menuItem) as FrameworkElement).DataContext as LunchCard);
+        //private void ContextMenuButtonPinToStart_Click(object sender, EventArgs e)
+        //{
+        //    MenuItem menuItem = (sender as MenuItem);
+        //    LunchCard card = ((VisualTreeHelper.GetParent(menuItem) as FrameworkElement).DataContext as LunchCard);
 
-            try
-            {
-                liveTileVm.create(card);
-            }
-            catch (LiveTileExists)
-            {
-                MessageBox.Show("Tile already exists!"); //TODO probably not needed
-            }
-            catch
-            {
-                MessageBox.Show("Creating live tile failed!");
-            }
-        }
+        //    try
+        //    {
+        //        liveTileVm.create(card);
+        //    }
+        //    catch (LiveTileExists)
+        //    {
+        //        MessageBox.Show("Tile already exists!"); //TODO probably not needed
+        //    }
+        //    catch
+        //    {
+        //        MessageBox.Show("Creating live tile failed!");
+        //    }
+        //}
 
         private void ContextMenuButtonDelete_Click(object sender, EventArgs e)
         {
