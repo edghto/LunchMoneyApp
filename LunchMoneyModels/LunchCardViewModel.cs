@@ -33,10 +33,6 @@ namespace LunchMoneyApp
             LunchCards = l;
         }
 
-        public void UpdateAll()
-        {
-        }
-
         public void UpdateAll(PropertyChangedEventHandler eventHandler = null)
         {
             IEnumerator<LunchCard> iter = LunchCards.GetEnumerator();

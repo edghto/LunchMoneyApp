@@ -5,7 +5,6 @@ using Microsoft.Phone.Shell;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Scheduler;
 using System.IO.IsolatedStorage;
-using Newtonsoft.Json.Linq;
 using LunchMoneyApp;
 using System.ComponentModel;
 
@@ -53,17 +52,9 @@ namespace BalanceChangePollAgent
         /// </remarks>
         protected override void OnInvoke(ScheduledTask task)
         {
-#if FOO 
-            string url = "http://www.edenred.pl/mobileapp/";
-            string postData = string.Format(
-                "action=mobileweb&code={0}&cardNumber={1}&lang=pl",
-                Code, CardNumber);
-            HttpPOSTWorker.invoke(url, postData, processResponse);
-#else
             LunchCardViewModel vm = new LunchCardViewModel();
             vm.LoadLunchCards();
             vm.UpdateAll(PropertyChangedEventHandler);
-#endif
         }
 
         public void PropertyChangedEventHandler(object sender, PropertyChangedEventArgs e)
@@ -73,7 +64,7 @@ namespace BalanceChangePollAgent
                 ShellToast popupMessage = new ShellToast()
                 {
                     Title = "Balance changed: ",
-                    Content = Balance.ToString(),
+                    Content = (sender as LunchCard).Balance.ToString(),
                     NavigationUri = new Uri("/MainPage.xaml", UriKind.Relative)
                 };
                 popupMessage.Show();
@@ -84,43 +75,5 @@ namespace BalanceChangePollAgent
 #endif
             NotifyComplete();
         }
-#if FOO
-        void processResponse(String response)
-        {
-            double balance = 0;
-
-            try
-            {
-                JObject jsonObject = JObject.Parse(response);
-                JObject balanceJsonObj = jsonObject.Value<JObject>("balance");
-                JObject cardJsonObj = balanceJsonObj.Value<JObject>(CardNumber + "");
-                balance = cardJsonObj.Value<double>("amount");
-
-
-                if (Balance != balance)
-                {
-                    Balance = balance;
-                    ShellToast popupMessage = new ShellToast()
-                    {
-                        Title = "Lunch Card status changed",
-                        Content = "Current balance: " + Balance,
-                        NavigationUri = new Uri("/App.xaml", UriKind.Relative)
-                    };
-                    popupMessage.Show();
-                }
-            }
-            catch
-            {
-            }
-
-            NotifyComplete();
-
-
-        }
-#endif
-
-        public Double Balance; 
-        public String CardNumber;
-        public String Code; 
     }
 }

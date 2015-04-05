@@ -103,6 +103,7 @@ namespace LunchMoneyApp
         {
             CheckStatus checkStatus = new CheckStatus();
             double balance = 0;
+            DateTime lastDate;
 
             checkStatus.isNew = false;
             try
@@ -115,11 +116,15 @@ namespace LunchMoneyApp
                 checkStatus.status = true;
                 checkStatus.time = 0;
                 checkStatus.timeUnit = CheckStatus.TimeUnit.SECONDS;
-                
                 isNew = false;
-                LastDate = DateTime.Now;
+                lastDate = DateTime.Now;
 
-                Deployment.Current.Dispatcher.BeginInvoke(() => { Balance = balance; LastChecked = checkStatus; });
+                Deployment.Current.Dispatcher.BeginInvoke(() => 
+                {
+                    Balance = balance; 
+                    LastChecked = checkStatus;
+                    LastDate = lastDate; 
+                });
             }
             catch
             {
