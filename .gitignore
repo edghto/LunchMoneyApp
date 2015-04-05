@@ -4,3 +4,7 @@
 *.sln
 *.suo
 gfx/*
+*.depend
+*.layout
+*.o
+*.exe
