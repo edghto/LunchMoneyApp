@@ -1,6 +1,6 @@
 /*
  * Simple HTTP server that should process both POST and GET request (only POST tested).
- * It was developed for the purpose of poll agent tests of Lunch Card WP7 app.
+ * It was developed for the purpose of poll agent tests of Lunch Card for WP7.
  * It uses following lib and versions:
  *   - libsoup-dev_2.26.3-1_win32.zip, libsoup_2.26.3-1_win32.zip,
  *   - glib_2.34.3-1_win32.zip, glib-dev_2.34.3-1_win32.zip.
@@ -30,8 +30,8 @@ void iterate_hash(gpointer key, gpointer value, gpointer user_data)
 }
 
 void itarate_header(const char *name,
-                                  const char *value,
-                                  gpointer user_data)
+                    const char *value,
+                    gpointer user_data)
 {
     g_print("%s => %s\n", name, value);
 }
@@ -73,7 +73,7 @@ server_callback (SoupServer        *server,
     if(query)
     {
 #if DEBUG
-            g_hash_table_foreach(query, iterate_hash, NULL);
+        g_hash_table_foreach(query, iterate_hash, NULL);
 #endif
         gpointer p_code    = g_hash_table_lookup(query, "code");
         gpointer p_card_no = g_hash_table_lookup(query, "cardNumber");
@@ -84,7 +84,13 @@ server_callback (SoupServer        *server,
     {
         g_print("Error! Parsing params failed!");
         if(msg && msg->request_body && msg->request_body && msg->response_body->data )
-        g_print("Request: %s\n\n", msg->request_body->data);
+            g_print("Request: %s\n\n", msg->request_body->data);
+        return;
+    }
+
+    if(!code || !card_no)
+    {
+        g_print("Error! Parsing params failed!");
         return;
     }
 
@@ -111,12 +117,6 @@ server_callback (SoupServer        *server,
 #endif
 }
 
-void
-destroy_handler()
-{
-    g_assert(0);
-}
-
 int
 main(int argc, char* argv[])
 {
@@ -134,7 +134,7 @@ main(int argc, char* argv[])
     g_assert(server);
 
     soup_server_add_handler (server, "/", server_callback,
-        NULL, destroy_handler);
+        NULL, NULL);
 
     g_print ("\nWaiting for requests on port %d...\n", port);
 
