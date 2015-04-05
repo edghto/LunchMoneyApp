@@ -11,6 +11,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using Microsoft.Phone.Scheduler;
 
 namespace LunchMoneyApp
 {
@@ -83,7 +84,7 @@ namespace LunchMoneyApp
 
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
-            /* we have hust get back to running app */
+            /* we have just get back to already running app */
             StateUtility.IsLaunching = false;
         }
 
@@ -197,6 +198,25 @@ namespace LunchMoneyApp
         {
             ProgressIndicatorController.On(this);
             vm.UpdateAll();
+        }
+
+        private void ApplicationBarItemRunInBg_Click(object sender, EventArgs e)
+        {
+            string taskName = Config.BALANCE_CHANGE_POLL_AGENT_NAME;
+
+            // Remove old task
+            if (null != (ScheduledActionService.Find(taskName) as PeriodicTask))
+            {
+                ScheduledActionService.Remove(taskName);
+            }
+
+            PeriodicTask task = new PeriodicTask(taskName);
+            task.Description = "Retreives balance of your lunch card";
+            ScheduledActionService.Add(task);
+#if DEBUG
+            ScheduledActionService.LaunchForTest(taskName,
+                    TimeSpan.FromMilliseconds(1500));
+#endif
         }
 
         private void ApplicationBarItemLicense_Click(object sender, EventArgs e)

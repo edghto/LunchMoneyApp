@@ -81,6 +81,7 @@
                 Click="ApplicationBarIconButtonUpdate_Click"
                 />
             <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text="Run in background" Click="ApplicationBarItemRunInBg_Click" />
                 <shell:ApplicationBarMenuItem Text="About" Click="ApplicationBarItemLicense_Click" />
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>

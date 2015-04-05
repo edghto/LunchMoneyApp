@@ -68,10 +68,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="HttpPOSTWorker.cs" />
-    <Compile Include="LiveTileViewModel.cs" />
-    <Compile Include="LunchCard.cs" />
-    <Compile Include="LunchCardViewModel.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -118,6 +114,20 @@
     </Content>
     <Content Include="icons\tile.png" />
     <Content Include="SplashScreenImage.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BalanceChangePollAgent\BalanceChangePollAgent.csproj">
+      <Project>{C50643F8-D3CB-4EA1-8344-810CAA309870}</Project>
+      <Name>BalanceChangePollAgent</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HttpPOSTWorker\HttpPOSTWorker.csproj">
+      <Project>{66960EF6-E5C3-4C2D-B1A6-349374FCF08C}</Project>
+      <Name>HttpPOSTWorker</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LunchMoneyModels\LunchMoneyModels.csproj">
+      <Project>{7827E989-F247-48E9-AD5E-7F513851D972}</Project>
+      <Name>LunchMoneyModels</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.CSharp.targets" />
