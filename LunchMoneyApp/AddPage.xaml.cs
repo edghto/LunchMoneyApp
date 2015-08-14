@@ -24,13 +24,19 @@ namespace LunchMoneyApp
         {
             string codeStr = codeTextBox.Text.ToString();
             string cardNumberStr = cardNumberTextBox.Text.ToString();
+            Int64 cardNumber;
+            Int16 code;
+
             if (codeStr.Length == 4 &&
-                cardNumberStr.Length == 10)
+                cardNumberStr.Length == 10 &&
+                Int16.TryParse(codeStr, out code) &&
+                Int64.TryParse(cardNumberStr, out cardNumber) &&
+                code > 0 && cardNumber > 0)
             {
                 App.lunchCard = new LunchCard()
                 {
-                    Code = Int16.Parse(codeStr),
-                    CardNumber = Int64.Parse(cardNumberStr),
+                    Code = code,
+                    CardNumber = cardNumber,
                     Balance = 0,
                     LastChecked = new CheckStatus(),
                     isNew = true
