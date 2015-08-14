@@ -44,12 +44,24 @@ namespace LunchMoneyApp
             }
         }
 
+        #region IsolatedStorage methods
+
+        public void Update(LunchCard card)
+        {
+            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
+            settings[GetCardHash(card)] = card.getCopy();
+        }
+
         public void Add(LunchCard card)
         {
             IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
             card.ServerUrl = Config.SERVER_URL;
             LunchCards.Add(card);
             settings.Add(GetCardHash(card), card.getCopy());
+            card.PropertyChanged += new PropertyChangedEventHandler(delegate(object sender, PropertyChangedEventArgs args)
+            {
+                Update((LunchCard) sender);
+            });
         }
 
         public void Del(LunchCard card)
@@ -58,6 +70,8 @@ namespace LunchMoneyApp
             LunchCards.Remove(card);
             settings.Remove(GetCardHash(card));
         }
+
+        #endregion
 
         private string GetCardHash(LunchCard card)
         {
