@@ -27,55 +27,56 @@ namespace LunchMoneyApp
             foreach (Object o in IsolatedStorageSettings.ApplicationSettings.Values)
             {
                 ((LunchCard)o).ServerUrl = Config.SERVER_URL;
-                l.Add((LunchCard) o);
+                l.Add((LunchCard)o);
             }
 
             LunchCards = l;
+
+            RegisterForPropertyChangeEvent(new PropertyChangedEventHandler(OnCardPropertyChange));
         }
 
-        public void UpdateAll(PropertyChangedEventHandler eventHandler = null)
+
+
+
+        #region Event stuff
+
+        public void RegisterForPropertyChangeEvent(PropertyChangedEventHandler eventHandler)
         {
             IEnumerator<LunchCard> iter = LunchCards.GetEnumerator();
             while (iter.MoveNext())
             {
-                if (null != eventHandler)
-                    (iter.Current as LunchCard).PropertyChanged += new System.ComponentModel.PropertyChangedEventHandler(eventHandler);
-                (iter.Current as LunchCard).update();
+                ((LunchCard)iter.Current).PropertyChanged += eventHandler;
             }
         }
 
-        #region IsolatedStorage methods
-
-        public void Update(LunchCard card)
+        public void UnregisterForPropertyChangeEvent(PropertyChangedEventHandler eventHandler)
         {
-            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
-            settings[GetCardHash(card)] = card.getCopy();
-        }
-
-        public void Add(LunchCard card)
-        {
-            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
-            card.ServerUrl = Config.SERVER_URL;
-            LunchCards.Add(card);
-            settings.Add(GetCardHash(card), card.getCopy());
-            card.PropertyChanged += new PropertyChangedEventHandler(delegate(object sender, PropertyChangedEventArgs args)
+            IEnumerator<LunchCard> iter = LunchCards.GetEnumerator();
+            while (iter.MoveNext())
             {
-                Update((LunchCard) sender);
-            });
+                ((LunchCard)iter.Current).PropertyChanged -= eventHandler;
+            }
         }
 
-        public void Del(LunchCard card)
+        private void OnCardPropertyChange(object sender, PropertyChangedEventArgs args)
         {
-            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
-            LunchCards.Remove(card);
-            settings.Remove(GetCardHash(card));
+            Update((LunchCard)sender);
         }
 
         #endregion
 
-        private string GetCardHash(LunchCard card)
+
+
+
+        #region Called directly from UI
+
+        public void UpdateAll()
         {
-            return card.Code + " " + card.CardNumber; ;
+            IEnumerator<LunchCard> iter = LunchCards.GetEnumerator();
+            while (iter.MoveNext())
+            {
+                ((LunchCard)iter.Current).update();
+            }
         }
 
         public void RefreshLastChecked()
@@ -85,5 +86,36 @@ namespace LunchMoneyApp
                 card.refreshLastCheckedProperty();
             }
         }
+
+        #endregion
+
+
+
+
+        #region IsolatedStorage methods
+
+        public void Update(LunchCard card)
+        {
+            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
+            settings[card.getCardHash()] = card.getCopy();
+        }
+
+        public void Add(LunchCard card)
+        {
+            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
+            card.ServerUrl = Config.SERVER_URL;
+            LunchCards.Add(card);
+            settings.Add(card.getCardHash(), card.getCopy());
+            card.PropertyChanged += new PropertyChangedEventHandler(OnCardPropertyChange);
+        }
+
+        public void Del(LunchCard card)
+        {
+            IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
+            LunchCards.Remove(card);
+            settings.Remove(card.getCardHash());
+        }
+
+        #endregion
     }
 }

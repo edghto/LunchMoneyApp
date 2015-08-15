@@ -13,11 +13,14 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json.Linq;
 using System.Windows.Threading;
+using LunchMoneyModels;
 
 namespace LunchMoneyApp
 {
     public class LunchCard : INotifyPropertyChanged
     {
+        #region Proprties accessors
+
         public bool isNew { get; set; } //This shouldn't be public
         public string ServerUrl { get;  set; }
         private DateTime _lastDate;
@@ -99,39 +102,7 @@ namespace LunchMoneyApp
             }
         }
 
-        void processResponse(String response)
-        {
-            CheckStatus checkStatus = new CheckStatus();
-            double balance = 0;
-            DateTime lastDate;
-
-            checkStatus.isNew = false;
-            try
-            {
-                JObject jsonObject = JObject.Parse(response);
-                JObject balanceJsonObj = jsonObject.Value<JObject>("balance");
-                JObject cardJsonObj = balanceJsonObj.Value<JObject>(CardNumber + "");
-                balance = cardJsonObj.Value<double>("amount");
-
-                checkStatus.status = true;
-                checkStatus.time = 0;
-                checkStatus.timeUnit = CheckStatus.TimeUnit.SECONDS;
-                isNew = false;
-                lastDate = DateTime.Now;
-
-                Deployment.Current.Dispatcher.BeginInvoke(() => 
-                {
-                    Balance = balance; 
-                    LastChecked = checkStatus;
-                    LastDate = lastDate; 
-                });
-            }
-            catch
-            {
-                checkStatus.status = false;
-                Deployment.Current.Dispatcher.BeginInvoke(() => { LastChecked = checkStatus; });
-            }
-        }
+        #endregion
 
         public void refreshLastCheckedProperty()
         {
@@ -185,58 +156,50 @@ namespace LunchMoneyApp
             return copy;
         }
 
+        public string getCardHash()
+        {
+            return Code + " " + CardNumber; ;
+        }
+
+
         public event PropertyChangedEventHandler PropertyChanged;
 
-        class TimeDiff
-        {
-            public class DiffException : SystemException {}
 
-            public void diff(DateTime d1, DateTime d2, CheckStatus checkStatus)
+        /*
+         * Process http response
+         */
+        private void processResponse(String response)
+        {
+            CheckStatus checkStatus = new CheckStatus();
+            double balance = 0;
+            DateTime lastDate;
+
+            checkStatus.isNew = false;
+            try
             {
-                TimeSpan ts = d1.Subtract(d2);
-                
-                if (ts.Seconds != 0)
-                {
-                    checkStatus.timeUnit = CheckStatus.TimeUnit.SECONDS;
-                    checkStatus.time = ts.Seconds;
-                }
-                if (ts.Minutes != 0)
-                {
-                    checkStatus.timeUnit = CheckStatus.TimeUnit.MINUTES;
-                    checkStatus.time = ts.Minutes;
-                }
-                if (ts.Hours != 0)
-                {
-                    checkStatus.timeUnit = CheckStatus.TimeUnit.HOURS;
-                    checkStatus.time = ts.Hours;
-                }
-                if (ts.Days != 0)
-                {
-                    checkStatus.timeUnit = CheckStatus.TimeUnit.DAYS;
-                    checkStatus.time = ts.Days;
-                }
+                JObject jsonObject = JObject.Parse(response);
+                JObject balanceJsonObj = jsonObject.Value<JObject>("balance");
+                JObject cardJsonObj = balanceJsonObj.Value<JObject>(CardNumber + "");
+                balance = cardJsonObj.Value<double>("amount");
 
-                if (checkStatus.timeUnit == CheckStatus.TimeUnit.NONE)
-                    throw new DiffException();
+                checkStatus.status = true;
+                checkStatus.time = 0;
+                checkStatus.timeUnit = CheckStatus.TimeUnit.SECONDS;
+                isNew = false;
+                lastDate = DateTime.Now;
+
+                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                {
+                    Balance = balance;
+                    LastChecked = checkStatus;
+                    LastDate = lastDate;
+                });
             }
-        }        
-    }
-
-    public class CheckStatus
-    {
-        public enum TimeUnit { DAYS, HOURS, MINUTES, SECONDS, NONE };
-
-        public int time { get; set; }
-        public TimeUnit timeUnit { get; set; }
-        public bool status { get; set; }
-        public bool isNew { get; set; }
-
-        public CheckStatus()
-        {
-            time = -1;
-            timeUnit = CheckStatus.TimeUnit.NONE;
-            status = false;
-            isNew = true;
+            catch
+            {
+                checkStatus.status = false;
+                Deployment.Current.Dispatcher.BeginInvoke(() => { LastChecked = checkStatus; });
+            }
         }
     }
 }

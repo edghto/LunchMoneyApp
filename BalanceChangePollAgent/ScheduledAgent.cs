@@ -15,6 +15,12 @@ namespace BalanceChangePollAgent
     {
         private static volatile bool _classInitialized;
 
+        /*
+         * Are we sure that there will be only one instance of this class
+         * at a time??
+         */
+        private static ScheduledAgent instance;
+
         /// <remarks>
         /// ScheduledAgent constructor, initializes the UnhandledException handler
         /// </remarks>
@@ -22,6 +28,7 @@ namespace BalanceChangePollAgent
         {
             if (!_classInitialized)
             {
+                instance = this;
                 _classInitialized = true;
                 // Subscribe to the managed exception handler
                 Deployment.Current.Dispatcher.BeginInvoke(delegate
@@ -54,17 +61,19 @@ namespace BalanceChangePollAgent
         {
             LunchCardViewModel vm = new LunchCardViewModel();
             vm.LoadLunchCards();
-            vm.UpdateAll(PropertyChangedEventHandler);
+            vm.RegisterForPropertyChangeEvent(PropertyChangedEventHandler);
+            vm.UpdateAll();
         }
 
-        public void PropertyChangedEventHandler(object sender, PropertyChangedEventArgs e)
+        public static void PropertyChangedEventHandler(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName.Equals("Balance"))
             {
+                LunchCard card = (LunchCard)sender;
                 ShellToast popupMessage = new ShellToast()
                 {
-                    Title = "Balance changed: ",
-                    Content = (sender as LunchCard).Balance.ToString(),
+                    Title = "Balance for card " + card.Code + " changed: ",
+                    Content = card.Balance.ToString(),
                     NavigationUri = new Uri("/MainPage.xaml", UriKind.Relative)
                 };
                 popupMessage.Show();
@@ -73,7 +82,7 @@ namespace BalanceChangePollAgent
             ScheduledActionService.LaunchForTest(Config.BALANCE_CHANGE_POLL_AGENT_NAME,
                     TimeSpan.FromMilliseconds(1500));
 #endif
-            NotifyComplete();
+            instance.NotifyComplete();
         }
     }
 }

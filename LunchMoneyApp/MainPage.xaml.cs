@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Microsoft.Phone.Scheduler;
+using LunchMoneyModels;
 
 namespace LunchMoneyApp
 {
@@ -146,6 +147,7 @@ namespace LunchMoneyApp
                 LunchCard card = (LunchCardList.SelectedItem as LunchCard);
                 card.update();
                 (sender as ListBox).SelectedIndex = -1;
+
             }
         }
 
@@ -217,6 +219,7 @@ namespace LunchMoneyApp
             ScheduledActionService.LaunchForTest(taskName,
                     TimeSpan.FromMilliseconds(1500));
 #endif
+            ((ApplicationBarMenuItem)sender).IsEnabled = false;
         }
 
         private void ApplicationBarItemLicense_Click(object sender, EventArgs e)
