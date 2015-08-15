@@ -4,7 +4,6 @@ using System.Windows;
 using Microsoft.Phone.Shell;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Scheduler;
-using System.IO.IsolatedStorage;
 using LunchMoneyApp;
 using System.ComponentModel;
 
@@ -15,11 +14,9 @@ namespace BalanceChangePollAgent
     {
         private static volatile bool _classInitialized;
 
-        /*
-         * Are we sure that there will be only one instance of this class
-         * at a time??
-         */
-        private static ScheduledAgent instance;
+        private ScheduledAgent instance;
+
+        private LunchCardViewModel vm = new LunchCardViewModel();
 
         /// <remarks>
         /// ScheduledAgent constructor, initializes the UnhandledException handler
@@ -59,13 +56,13 @@ namespace BalanceChangePollAgent
         /// </remarks>
         protected override void OnInvoke(ScheduledTask task)
         {
-            LunchCardViewModel vm = new LunchCardViewModel();
+            vm = new LunchCardViewModel();
             vm.LoadLunchCards();
             vm.RegisterForPropertyChangeEvent(PropertyChangedEventHandler);
             vm.UpdateAll();
         }
 
-        public static void PropertyChangedEventHandler(object sender, PropertyChangedEventArgs e)
+        public void PropertyChangedEventHandler(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName.Equals("Balance"))
             {
@@ -77,6 +74,7 @@ namespace BalanceChangePollAgent
                     NavigationUri = new Uri("/MainPage.xaml", UriKind.Relative)
                 };
                 popupMessage.Show();
+                vm.UnregisterForPropertyChangeEvent(PropertyChangedEventHandler, card);
             }
 #if DEBUG
             ScheduledActionService.LaunchForTest(Config.BALANCE_CHANGE_POLL_AGENT_NAME,

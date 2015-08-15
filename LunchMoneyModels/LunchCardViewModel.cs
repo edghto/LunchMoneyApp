@@ -58,6 +58,12 @@ namespace LunchMoneyApp
             }
         }
 
+        public void UnregisterForPropertyChangeEvent(PropertyChangedEventHandler eventHandler, LunchCard card)
+        {
+            card.PropertyChanged -= eventHandler;
+        }
+
+
         private void OnCardPropertyChange(object sender, PropertyChangedEventArgs args)
         {
             Update((LunchCard)sender);
@@ -98,6 +104,7 @@ namespace LunchMoneyApp
         {
             IsolatedStorageSettings settings = IsolatedStorageSettings.ApplicationSettings;
             settings[card.getCardHash()] = card.getCopy();
+            settings.Save();
         }
 
         public void Add(LunchCard card)
