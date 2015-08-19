@@ -1,18 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
-using Microsoft.Phone.Scheduler;
 using LunchMoneyModels;
+
 
 namespace LunchMoneyApp
 {
@@ -34,7 +27,7 @@ namespace LunchMoneyApp
             return (CheckStatus)obj.GetValue(LastCheckedProperty);
         } 
 
-        //TODO rename this handler foo seems to be inappropriate 
+        //TODO rename this handler, foo seems to be inappropriate 
         static void OnFooChanged(DependencyObject obj, DependencyPropertyChangedEventArgs args) 
         {
             TextBlock lastCheckedTextBlock = obj as TextBlock;
@@ -77,6 +70,8 @@ namespace LunchMoneyApp
         private LunchCardViewModel vm;
         //private LiveTileViewModel liveTileVm;
 
+        private BgTaskManager taskManager;
+
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
             /* first launch of app */
@@ -94,6 +89,10 @@ namespace LunchMoneyApp
             InitializeComponent();
             vm = new LunchCardViewModel();
             //liveTileVm = new LiveTileViewModel();
+            taskManager = new BgTaskManager(){
+                TaskDescription = "Retreives balance of your lunch card",
+                TaskName = Config.BALANCE_CHANGE_POLL_AGENT_NAME
+            };
         }
 
         protected override void OnNavigatedTo(System.Windows.Navigation.NavigationEventArgs e)
@@ -121,6 +120,9 @@ namespace LunchMoneyApp
 
             LunchCardList.DataContext = vm.LunchCards;
             vm.RefreshLastChecked();
+
+            //TODO - fix this ugly hardcode index of menu item
+            TaskMenuItem_Text((ApplicationBarMenuItem)this.ApplicationBar.MenuItems[0], taskManager.isEnabled());
         }
 
         protected override void OnNavigatedFrom(System.Windows.Navigation.NavigationEventArgs e)
@@ -204,22 +206,13 @@ namespace LunchMoneyApp
 
         private void ApplicationBarItemRunInBg_Click(object sender, EventArgs e)
         {
-            string taskName = Config.BALANCE_CHANGE_POLL_AGENT_NAME;
+            taskManager.toggleState();
+            TaskMenuItem_Text((ApplicationBarMenuItem)sender, taskManager.isEnabled());
+        }
 
-            // Remove old task
-            if (null != (ScheduledActionService.Find(taskName) as PeriodicTask))
-            {
-                ScheduledActionService.Remove(taskName);
-            }
-
-            PeriodicTask task = new PeriodicTask(taskName);
-            task.Description = "Retreives balance of your lunch card";
-            ScheduledActionService.Add(task);
-#if DEBUG
-            ScheduledActionService.LaunchForTest(taskName,
-                    TimeSpan.FromMilliseconds(1500));
-#endif
-            ((ApplicationBarMenuItem)sender).IsEnabled = false;
+        private void TaskMenuItem_Text(ApplicationBarMenuItem item, bool isEnabled)
+        {
+            item.Text = isEnabled ? "Disable task" : "Run in background";
         }
 
         private void ApplicationBarItemLicense_Click(object sender, EventArgs e)
