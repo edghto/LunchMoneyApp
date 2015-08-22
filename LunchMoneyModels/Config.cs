@@ -14,9 +14,9 @@ namespace LunchMoneyApp
     public static class Config
     {
 #if DEBUG
-        public const string SERVER_URL = "http://127.0.0.1";
+        public const string SERVER_URL = "http://192.168.0.101";
 #else
-        public static const string SERVER_URL = "http://www.edenred.pl/mobileapp/";
+        public const string SERVER_URL = "http://www.edenred.pl/mobileapp/";
 #endif
         public const string BALANCE_CHANGE_POLL_AGENT_NAME = "LunchCard_BalanceChangePollAgent";
     }

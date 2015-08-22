@@ -20,7 +20,7 @@ namespace LunchMoneyApp
     {
         public ObservableCollection<LunchCard> LunchCards { get; set; }
 
-        public void LoadLunchCards()
+        public int LoadLunchCards()
         {
             ObservableCollection<LunchCard> l = new ObservableCollection<LunchCard>();
 
@@ -33,6 +33,8 @@ namespace LunchMoneyApp
             LunchCards = l;
 
             RegisterForPropertyChangeEvent(new PropertyChangedEventHandler(OnCardPropertyChange));
+
+            return l.Count;
         }
 
 
