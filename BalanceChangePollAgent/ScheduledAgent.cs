@@ -18,6 +18,8 @@ namespace BalanceChangePollAgent
 
         private LunchCardViewModel vm = new LunchCardViewModel();
 
+        private int count;
+
         /// <remarks>
         /// ScheduledAgent constructor, initializes the UnhandledException handler
         /// </remarks>
@@ -57,16 +59,16 @@ namespace BalanceChangePollAgent
         protected override void OnInvoke(ScheduledTask task)
         {
             vm = new LunchCardViewModel();
-            vm.LoadLunchCards();
+            count = vm.LoadLunchCards();
             vm.RegisterForPropertyChangeEvent(PropertyChangedEventHandler);
             vm.UpdateAll();
         }
 
         public void PropertyChangedEventHandler(object sender, PropertyChangedEventArgs e)
         {
+            LunchCard card = (LunchCard) sender;
             if (e.PropertyName.Equals("Balance"))
             {
-                LunchCard card = (LunchCard)sender;
                 ShellToast popupMessage = new ShellToast()
                 {
                     Title = "Balance for card " + card.Code + " changed: ",
@@ -74,13 +76,33 @@ namespace BalanceChangePollAgent
                     NavigationUri = new Uri("/MainPage.xaml", UriKind.Relative)
                 };
                 popupMessage.Show();
-                vm.UnregisterForPropertyChangeEvent(PropertyChangedEventHandler, card);
             }
+
+            /* 
+             * This property is always notified, so we can use it to count 
+             * how many card was updated and how many left.
+             * We are assuming that BeginInvoke preserves order of changed properties.
+             * So Balance should be called before LastChecked property.
+             */
+            if (e.PropertyName.Equals("LastChecked"))
+            {
+                vm.UnregisterForPropertyChangeEvent(PropertyChangedEventHandler, card);
+                NotifyCardComplete();
+            }
+        }
+
+        private void NotifyCardComplete()
+        {
+            count -= 1;
+            if( count <= 0)
+            {
+                count = 0;
 #if DEBUG
-            ScheduledActionService.LaunchForTest(Config.BALANCE_CHANGE_POLL_AGENT_NAME,
-                    TimeSpan.FromMilliseconds(1500));
+                ScheduledActionService.LaunchForTest(Config.BALANCE_CHANGE_POLL_AGENT_NAME,
+                        TimeSpan.FromMilliseconds(1500));
 #endif
-            instance.NotifyComplete();
+                instance.NotifyComplete();
+            }
         }
     }
 }

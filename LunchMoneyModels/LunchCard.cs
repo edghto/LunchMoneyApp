@@ -188,12 +188,24 @@ namespace LunchMoneyApp
                 isNew = false;
                 lastDate = DateTime.Now;
 
-                Deployment.Current.Dispatcher.BeginInvoke(() =>
+                if (Balance != balance)
                 {
-                    Balance = balance;
-                    LastChecked = checkStatus;
-                    LastDate = lastDate;
-                });
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        Balance = balance;
+                        LastChecked = checkStatus;
+                        LastDate = lastDate;
+                    });
+                }
+                else
+                { 
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                    {
+                        LastChecked = checkStatus;
+                        LastDate = lastDate;
+                    });
+                }
+
             }
             catch
             {
