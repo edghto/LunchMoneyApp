@@ -37,6 +37,16 @@ void itarate_header(const char *name,
 }
 #endif
 
+gsize gen_response(gchar* resp_body, gchar* code, char* card_no, double balance)
+{
+    g_print("%s %s => %f\n", code, card_no, balance);
+
+    gsize resp_length = g_sprintf(resp_body,
+        "{\"cardname\":\"Ticket Restaurant\\u00ae\",\"balance\":{\"%s\":{\"amount\":%.02f}}}\n",
+        card_no, balance);
+    return resp_length;
+}
+
 void
 server_callback (SoupServer        *server,
                  SoupMessage       *msg,
@@ -97,14 +107,19 @@ server_callback (SoupServer        *server,
     gchar* resp_body = g_new(gchar, 1024);
     g_assert(resp_body);
 
-    balance -= 30;
-    if(balance < 0)
-        balance = MAX_BALANCE;
+    gsize resp_length;
+    if(0 == g_strcmp0(code,"1234")) /* for testing case when value should not change */
+    {
+        resp_length = gen_response(resp_body, code, card_no, 5.29);
+    }
+    else
+    {
+        balance -= 30;
+        if(balance < 0)
+            balance = MAX_BALANCE;
 
-    gsize resp_length = g_sprintf(resp_body,
-        "{\"cardname\":\"Ticket Restaurant\\u00ae\",\"balance\":{\"%s\":{\"amount\":%.02f}}}\n",
-        card_no, balance);
-
+        resp_length = gen_response(resp_body, code, card_no, balance);
+    }
 
     soup_message_set_status (msg, SOUP_STATUS_OK);
     soup_message_set_response (msg, "application/json",
